@@ -1,0 +1,171 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Model\NewsCategory;
+use App\Model\News;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+
+class NewsController extends Controller {
+
+    public $categories = null;
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function __construct() {
+        $this->categories = NewsCategory::getAllCategory();
+    }
+
+    public function index() {
+        $view = view('admin.news.index');
+        $view->title = 'Мэдээллийн жагсаалт';
+        $view->categories = $this->categories;
+        $view->js = array(
+            'assets/plugins/jquery-easyui/jquery.easyui.min.js',
+            'assets/plugins/jquery-easyui/jquery.datagrid.js',
+            'assets/plugins/jquery-easyui/locale/easyui-lang-mn.js'
+        );
+
+        $view->css = array(
+            'assets/plugins/jquery-easyui/themes/metro/datagrid.css',
+            'assets/plugins/jquery-easyui/themes/metro/easyui.css'
+        );
+        return $view;
+    }
+
+    public function newsList(Request $request) {
+        $param = array(
+            'title' => $request->input('title'),
+            'date' => $request->input('date'),
+            'page' => $request->input('page'),
+            'rows' => $request->input('rows'),
+            'category' => $request->input('category')
+        );
+        return News::getAllNews($param);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function create() {
+        $view = view('admin.news.create');
+        $view->categories = $this->categories;
+        $view->title = 'Мэдээлэл нэмэх';
+        $view->js = array(
+            'assets/plugins/ckeditor/ckeditor.js',
+            'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.js',
+            'assets/plugins/jquery-validation/dist/jquery.validate.min.js',
+            'assets/plugins/jquery-validation/dist/additional-methods.min.js'
+        );
+        $view->css = array(
+            'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.css'
+        );
+        return $view;
+    }
+
+    public function upload(Request $request) {
+        $message = "";
+        $fileUrl = "";
+        $funcNum = $_GET['CKEditorFuncNum'];
+        $file = $request->file('upload');
+        if ($file == null) {
+            $message = "No file uploaded.";
+        } else if ($file->getClientSize() == 0) {
+            $message = "The file is of zero length.";
+        } else if (($file->getClientOriginalExtension() != "jpg")
+                AND ( $file->getClientOriginalExtension() != "jpeg")
+                AND ( $file->getClientOriginalExtension() != "png")
+                AND ( $file->getClientOriginalExtension() != "gif")) {
+            $message = "The image must be in either JPG or PNG or GIF format. Please upload a JPG or PNG instead.";
+        } else {
+            $prenumber = rand(9999999, 99999999999999);
+            $number = rand(9999999, 99999999999999);
+            $fileName = $prenumber . '_' . $number . '.' . $file->getClientOriginalExtension();
+            $filePath = 'assets/img/post';
+            $file->move($filePath, $fileName);
+            $fileUrl = asset('' . $filePath . '/' . $fileName);
+            $message = "Successfully uploaded";
+        }
+        echo '<script type="text/javascript">window.parent.CKEDITOR.tools.callFunction(' . $funcNum . ', "' . $fileUrl . '", "' . $message . '");</script>';
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+    public function store(Request $request) {
+        $imgUrl = null;
+        if ($request->file('featured_image') != null) {
+            $prenumber = rand(9999999, 99999999999999);
+            $number = rand(9999999, 99999999999999);
+            $filePath = 'assets/img/post/featured_image';
+            $file = $request->file('featured_image');
+            $fileName = $prenumber . '_' . $number . '.' . $file->getClientOriginalExtension();
+            $file->move($filePath, $fileName);
+            $imgUrl = $filePath . '/' . $fileName;
+        }
+        $param = array(
+            'title' => $request->input('title'),
+            'content' => $request->input('editor1'),
+            'categories' => $request->input('categories'),
+            'created_date' => $request->input('created_date'),
+            'featured_image' => $imgUrl
+        );
+
+        $isSaved = News::saveNews($param);
+        if ($isSaved) {
+            return Redirect::to('admin/news')->with('success', 'Мэдээ амжилттай нийтлэгдлээ!');
+        } else {
+            return Redirect::to('admin/news')->with('failed', 'Алдаа гарлаа!');
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function show($id) {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function edit($id) {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function update($id) {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function destroy($id) {
+        //
+    }
+
+}
