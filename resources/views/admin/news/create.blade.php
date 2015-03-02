@@ -33,7 +33,7 @@
                             <div class="control-group">
                                 <label class="control-label" for="lastName">Мэдээний ангилал</label>
                                 <div class="controls">
-                                    <select id="categories" name="categories[]" class="m-wrap span12" multiple="multiple">
+                                    <select id="categories" name="categories[]" class="m-wrap span12 required" multiple="multiple">
                                         @foreach($categories as $cat)
                                         <option value="{{$cat['id']}}">{{$cat['name']}}</option>
                                         @endforeach

@@ -7,20 +7,22 @@ use App\Model\NewsCategory;
 use App\Model\News;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
-
+use App\Http\Middleware\CheckAuth;
 class NewsController extends Controller {
 
     public $categories = null;
+
+    
+    public function __construct() {
+        CheckAuth::check();
+        $this->categories = NewsCategory::getAllCategory();
+    }
 
     /**
      * Display a listing of the resource.
      *
      * @return Response
      */
-    public function __construct() {
-        $this->categories = NewsCategory::getAllCategory();
-    }
-
     public function index() {
         $view = view('admin.news.index');
         $view->title = 'Мэдээллийн жагсаалт';

@@ -11,12 +11,13 @@
 |
 */
 
-Route::get('auth', 'AdminController@showLogin');
+Route::get('auth', ['as'=>'login','uses'=>'AdminController@showLogin']);
 Route::post('auth/login','AdminController@checkUser');
 Route::get('auth/logout',['as'=>'logout','uses'=>'AdminController@logOut']);
-Route::get('admin',['as'=>'adminIndex','uses'=>'AdminController@showIndex']);
-Route::resource('admin/news', 'Admin\NewsController');
+Route::get('admin',['as'=>'adminIndex','uses'=>'AdminController@index']);
 Route::post('admin/newslist','admin\NewsController@newsList');
 Route::post('admin/news/upload',['as'=>'imageUpload','uses'=>'admin\NewsController@upload']);
+Route::resource('admin/news', 'Admin\NewsController');
+Route::resource('admin/news/category', 'Admin\NewsCategoryController');
 
 

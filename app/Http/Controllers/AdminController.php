@@ -18,7 +18,7 @@ class AdminController extends Controller {
         }
     }
 
-    public function showIndex() {
+    public function index() {
         if (Session::has('user')) {
             $view = view('admin.index');
             $view->title = 'Удирдлагын хэсэг';

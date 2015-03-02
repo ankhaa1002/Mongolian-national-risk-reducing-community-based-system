@@ -1,6 +1,4 @@
-@extends('admin.layouts.base')
 
-@section('content')
 <div class="row-fluid">
     <div class="span12">
         <div class="row-fluid page-404">
@@ -17,4 +15,3 @@
         </div>
     </div>
 </div>
-@stop
