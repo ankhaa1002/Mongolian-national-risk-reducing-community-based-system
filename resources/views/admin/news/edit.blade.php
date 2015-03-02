@@ -1,19 +1,15 @@
 @extends('admin.layouts.base')
 
 @section('content')
-
 <div class="row-fluid">
     <div class="span12">
         <div class="portlet box blue">
             <div class="portlet-title">
-                <h4><i class="icon-reorder"></i>Нэмэх</h4>
-                <div class="tools">
-                    <a href="javascript:;" class="collapse"></a>
-                </div>
+                <h4><i class="icon-reorder"></i>Засах</h4>
             </div>
             <div class="portlet-body form">
                 <!-- BEGIN FORM-->
-                <form id="addNewsForm" action="{{ route('admin.news.store') }}" method="POST" class="horizontal-form" enctype="multipart/form-data">
+                {!! Form::model($news,array('method'=>'PATCH','route'=>array('admin.news.update',$news->id),'files' => true,'id'=>'editNewsForm')) !!}
                     <div class="alert alert-error hide">
                         <button class="close" data-dismiss="alert"></button>
                         Та доор алдаануудыг засна уу
@@ -24,7 +20,7 @@
                             <div class="control-group">
                                 <label class="control-label" for="firstName">Гарчиг</label>
                                 <div class="controls">
-                                    <input type="text" name="title" id="title" class="m-wrap span12" placeholder="">
+                                    <input type="text" name="title" id="title" class="m-wrap span12" value="{{ $news->title }}" placeholder="">
                                 </div>
                             </div>
                         </div>
@@ -35,7 +31,7 @@
                                 <div class="controls">
                                     <select id="categories" name="categories[]" class="m-wrap span12" multiple="multiple">
                                         @foreach($categories as $cat)
-                                        <option value="{{$cat['id']}}">{{$cat['name']}}</option>
+                                        <option @if(isset($cat['selected']))selected="{{ $cat['selected'] }}"@endif value="{{$cat['id']}}">{{$cat['name']}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -48,7 +44,7 @@
                             <div class="control-group">
                                 <label class="control-label" for="lastName">Огноо</label>
                                 <div class="controls">
-                                    <input type="text" name="created_date" id="created_date" class="m-wrap span12" placeholder="">
+                                    <input type="text" name="created_date" value="{{ $news->created_date }}" id="created_date" class="m-wrap span12" placeholder="">
                                 </div>
                             </div>
                         </div>
@@ -57,13 +53,17 @@
                                 <label class="control-label" for="firstName">Нүүрний зураг</label>
                                 <div class="fileupload fileupload-new" data-provides="fileupload"><input type="hidden">
                                     <div class="fileupload-new thumbnail pull-left" style="width: 100px; height: 70px;margin-right: 10px;">
+                                        @if($news->featured_image != null)
+                                        <img src="{{ asset(''.$news->featured_image.'') }}" alt="">
+                                        @else
                                         <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="">
+                                        @endif
                                     </div>
                                     <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
                                     <div>
                                         <span class="btn btn-file"><span class="fileupload-new" style="margin-top: 20px;">Зураг сонгох</span>
                                             <span class="fileupload-exists">Өөрчлөх</span>
-                                            <input id="featured_image" name="featured_image" type="file" value="{{ csrf_token() }}" class="default"></span>
+                                            <input id="featured_image" name="featured_image" type="file" class="default"></span>
                                         <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Устгах</a>
                                     </div>
                                 </div>
@@ -76,6 +76,7 @@
                                 <label class="control-label">Контент</label>
                                 <div class="controls">
                                     <textarea name="editor1" id="editor1" rows="10" cols="80">
+                                        {{ $news->content }}
                                     </textarea>
                                 </div>
                             </div>
@@ -87,7 +88,7 @@
                         <button type="submit" class="btn blue"><i class="icon-ok"></i> Хадгалах</button>
                         <button onclick="backToList()" type="button" class="btn">Буцах</button>
                     </div>
-                </form>
+                {!! Form::close() !!}
                 <!-- END FORM--> 
             </div>
         </div>
@@ -104,10 +105,8 @@
     $('#created_date').datepicker({
         format: 'yyyy-mm-dd'
     });
-    
-    $('#created_date').datepicker('update', new Date(2011, 2, 5));
 
-    var form = $('#addNewsForm');
+    var form = $('#editNewsForm');
     var error1 = $('.alert-error', form);
     var success1 = $('.alert-success', form);
 
@@ -151,7 +150,7 @@
             App.scrollTo(error1, -200);
         },
         highlight: function (element) { // hightlight error inputs
-           $(element)
+            $(element)
                     .closest('.help-inline').removeClass('ok'); // display OK icon
             $(element)
                     .closest('.control-group').removeClass('success').addClass('error'); // set error class to the control group
@@ -171,19 +170,18 @@
         }
     });
 
-    $('#addNewsForm').submit(function () {
+    $('#editNewsForm').submit(function () {
         if (!form.valid()) {
             e.preventDefault();
         } else {
-            $('#addNewsForm')[0].submit();
+            $('#editNewsForm')[0].submit();
         }
     });
-    
-    function backToList(){
+
+    function backToList() {
         window.location.replace("{{route('admin.news.index')}}");
     }
 
 </script>
 @stop
-
 @stop

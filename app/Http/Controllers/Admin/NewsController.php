@@ -104,13 +104,8 @@ class NewsController extends Controller {
     public function store(Request $request) {
         $imgUrl = null;
         if ($request->file('featured_image') != null) {
-            $prenumber = rand(9999999, 99999999999999);
-            $number = rand(9999999, 99999999999999);
-            $filePath = 'assets/img/post/featured_image';
             $file = $request->file('featured_image');
-            $fileName = $prenumber . '_' . $number . '.' . $file->getClientOriginalExtension();
-            $file->move($filePath, $fileName);
-            $imgUrl = $filePath . '/' . $fileName;
+            $imgUrl = $this->saveImage($file);
         }
         $param = array(
             'title' => $request->input('title'),
@@ -128,6 +123,18 @@ class NewsController extends Controller {
         }
     }
 
+    public function saveImage($file) {
+        $imgUrl = "";
+        $prenumber = rand(9999999, 99999999999999);
+        $number = rand(9999999, 99999999999999);
+        $filePath = 'assets/img/post/featured_image';
+        $fileName = $prenumber . '_' . $number . '.' . $file->getClientOriginalExtension();
+        $file->move($filePath, $fileName);
+        $imgUrl = $filePath . '/' . $fileName;
+
+        return $imgUrl;
+    }
+
     /**
      * Display the specified resource.
      *
@@ -135,7 +142,7 @@ class NewsController extends Controller {
      * @return Response
      */
     public function show($id) {
-        //
+        
     }
 
     /**
@@ -145,7 +152,32 @@ class NewsController extends Controller {
      * @return Response
      */
     public function edit($id) {
-        //
+
+        $i = 0;
+        $categories = $this->categories;
+        $selectedCategories = News::getNews($id)->categories()->get();
+        foreach ($categories as $cat) {
+            foreach ($selectedCategories as $sCat) {
+                if ($cat['id'] == $sCat['id']) {
+                    $categories[$i]['selected'] = 'selected';
+                }
+            }
+            $i++;
+        }
+        $news = News::getNews($id);
+        $view = view('admin.news.edit', compact('news'));
+        $view->title = 'Мэдээлэл засах';
+        $view->categories = $categories;
+        $view->js = array(
+            'assets/plugins/ckeditor/ckeditor.js',
+            'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.js',
+            'assets/plugins/jquery-validation/dist/jquery.validate.min.js',
+            'assets/plugins/jquery-validation/dist/additional-methods.min.js'
+        );
+        $view->css = array(
+            'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.css'
+        );
+        return $view;
     }
 
     /**
@@ -154,8 +186,28 @@ class NewsController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function update($id) {
-        //
+    public function update($id, Request $request) {
+        $imgUrl = null;
+        $news = News::find($id);
+        if ($request->file('featured_image') != null) {
+            $file = $request->file('featured_image');
+            $imgUrl = $this->saveImage($file);
+        }
+        $params = array(
+            'title' => $request->input('title'),
+            'categories' =>$request->input('categories'),
+            'content' => $request->input('editor1'),
+            'created_date' => $request->input('created_date'),
+            'featured_image' => $imgUrl == null ? $news->featured_image : $imgUrl
+        );
+        
+        $isSaved = News::updateNews($params, $id);
+        
+        if ($isSaved) {
+            return Redirect::to('admin/news')->with('success', 'Мэдээ амжилттай засварлагдлаа!');
+        } else {
+            return Redirect::to('admin/news')->with('failed', 'Алдаа гарлаа!');
+        }
     }
 
     /**
@@ -164,8 +216,13 @@ class NewsController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id) {
-        //
+    public function destroy($id,Request $request) {
+        $result = true;
+        foreach($request->input('ids') as $id){
+            News::destroy($id);
+        }
+        
+        echo json_encode($result);
     }
 
 }

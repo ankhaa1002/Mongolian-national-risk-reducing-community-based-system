@@ -26,7 +26,8 @@ class News extends Model {
             $temp = News::with('categories')
                     ->where('title', 'like', '%' . $title . '%')
                     ->skip($offset)
-                    ->take($rows);
+                    ->take($rows)
+                    ->orderBy('created_date','desc');
 
         if ($date != null) {
             $semp = $temp
@@ -54,6 +55,10 @@ class News extends Model {
         return $result;
     }
     
+    public static function getNews($id){
+        return News::find($id);
+    }
+    
     public static function saveNews($param){
         $news = new News();
         $news->title = $param['title'];
@@ -62,6 +67,19 @@ class News extends Model {
         $news->featured_image = $param['featured_image'];
         $news->created_user = Session::get('user')->id;
         $result = $news->save();
+        $news->categories()->sync($param['categories']);
+        return $result;
+    }
+    
+    public static function updateNews($param, $id){
+        $news = News::find($id);
+        $news->title = $param['title'];
+        $news->content = $param['content'];
+        $news->created_date = $param['created_date'];
+        $news->updated_date = date("Y-m-d");
+        $news->featured_image = $param['featured_image'];
+        $news->created_user = Session::get('user')->id;
+        $result = $news->update();
         $news->categories()->sync($param['categories']);
         return $result;
     }

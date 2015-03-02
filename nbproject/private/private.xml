@@ -4,9 +4,9 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/wamp/www/ontsgoi/app/Http/Controllers/AdminController.php</file>
-            <file>file:/C:/wamp/www/ontsgoi/resources/views/admin/includes/sidebar.blade.php</file>
-            <file>file:/C:/wamp/www/ontsgoi/resources/views/admin/includes/header.blade.php</file>
-            <file>file:/C:/wamp/www/ontsgoi/config/app.php</file>
+            <file>file:/C:/wamp/www/ontsgoi/resources/views/admin/includes/footer.blade.php</file>
+            <file>file:/C:/wamp/www/ontsgoi/readme.md</file>
+            <file>file:/C:/wamp/www/ontsgoi/resources/views/admin/index.blade.php</file>
         </group>
     </open-files>
 </project-private>

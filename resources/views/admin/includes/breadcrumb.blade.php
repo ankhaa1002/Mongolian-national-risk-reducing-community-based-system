@@ -7,7 +7,7 @@
 <ul class="breadcrumb">
     <li>
         <i class="icon-home"></i>
-        <a href="index.html">Нүүр</a> 
+        <a href="index.html">Удирдлага</a> 
         <i class="icon-angle-right"></i>
     </li>
     <li><a href="#">

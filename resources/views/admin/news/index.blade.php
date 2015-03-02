@@ -83,12 +83,12 @@
             </button>
         </div>
         <div class="btn-group">
-            <button class="btn blue">
+            <button onclick="editNews()" class="btn blue">
                 Засах <i class="icon-pencil"></i>
             </button>
         </div>
         <div class="btn-group">
-            <button class="btn red">
+            <button onclick="deleteNews()" class="btn red">
                 Устгах <i class="icon-minus"></i>
             </button>
         </div>
@@ -138,7 +138,14 @@
                         return cat;
                     }
                 },
-                {field: 'created_date', title: 'Нийтэлсэн огноо', width: 20}
+                {field: 'created_date', title: 'Нийтэлсэн огноо', width: 20},
+                {field: 'updated_date', title: 'Сүүлд шинэчилсэн', width: 20, formatter: function (value, row, index) {
+                        if (value === null) {
+                            return 'Одоогоор шинэчлэгдээгүй';
+                        } else {
+                            return value;
+                        }
+                    }}
             ]]
     });
 
@@ -153,6 +160,76 @@
 
     function addNews() {
         window.location.replace("{{ route('admin.news.create') }}");
+    }
+
+    function editNews() {
+        var rows = $('#newsList').datagrid('getSelections');
+        if (rows.length > 1) {
+            alert('Олон мэдээг зэрэг засах боломжгүй!');
+        } else if (rows.length === 0) {
+            alert('Засах мэдээгээ сонгоно уу!');
+        } else {
+            window.location.replace('news/' + rows[0].id + '/edit');
+        }
+    }
+
+    function deleteNews() {
+
+        var dialogName = '#removeDialog';
+        if (!$(dialogName).length) {
+            $('<div id="' + dialogName.replace('#', '') + '"></div>').appendTo('body');
+        }
+
+        var ids = [];
+        var rows = $('#newsList').datagrid('getSelections');
+
+        if (rows.length === 0) {
+            alert('Та ядаж нэг мэдээ сонгоно уу!');
+            return;
+        } else {
+            $.each(rows, function (index, value) {
+                ids.push(value['id']);
+            });
+
+            $(dialogName).html('Та устгахдаа итгэлтэй байна уу?').dialog({
+                cache: false,
+                resizable: true,
+                bgiframe: true,
+                autoOpen: false,
+                width: 'auto',
+                height: 'auto',
+                modal: true,
+                buttons: [
+                    {text: 'Тийм', class: 'btn', handler: function () {
+                            $.ajax({
+                                url: "{{ route('admin.news.destroy') }}",
+                                type: 'post',
+                                dataType: "json",
+                                data: {
+                                    _token: _token,
+                                    _method: 'delete',
+                                    ids: ids
+                                },
+                                success: function (data) {
+                                    if (data) {
+                                        $('#newsList').datagrid('reload');
+                                        $(dialogName).dialog('close');
+                                    }
+                                },
+                                error: function (e) {
+                                    console.log(e);
+                                }
+                            });
+                        }},
+                    {text: 'Үгүй', class: 'btn', handler: function () {
+                            $(dialogName).dialog('close');
+                        }}]
+            }).dialog('open');
+        }
+    }
+
+    function clearInput() {
+        document.getElementById("searchNewsForm").reset();
     }
 </script>
 @stop

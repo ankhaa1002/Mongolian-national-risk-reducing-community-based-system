@@ -26,6 +26,8 @@
 	<!-- BEGIN PAGE LEVEL PLUGINS -->
         <script type="text/javascript" src="{{asset('assets/plugins/select2/select2.min.js')}}"></script>
         <script type="text/javascript" src="{{asset('assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js')}}"></script>
+        <script src="{{asset('assets/plugins/bootstrap-daterangepicker/date.js')}}" type="text/javascript"></script>
+        <script src="{{asset('assets/plugins/bootstrap-daterangepicker/daterangepicker.js')}}" type="text/javascript"></script>
         
         @if(isset($js))
         @foreach($js as $jscript)

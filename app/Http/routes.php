@@ -17,6 +17,6 @@ Route::get('auth/logout',['as'=>'logout','uses'=>'AdminController@logOut']);
 Route::get('admin',['as'=>'adminIndex','uses'=>'AdminController@showIndex']);
 Route::resource('admin/news', 'Admin\NewsController');
 Route::post('admin/newslist','admin\NewsController@newsList');
-Route::post('admin/news/upload','admin\NewsController@upload');
+Route::post('admin/news/upload',['as'=>'imageUpload','uses'=>'admin\NewsController@upload']);
 
 

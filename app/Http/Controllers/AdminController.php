@@ -33,8 +33,6 @@ class AdminController extends Controller {
                 'assets/plugins/flot/jquery.flot.js',
                 'assets/plugins/flot/jquery.flot.resize.js',
                 'assets/plugins/jquery.pulsate.min.js',
-                'assets/plugins/bootstrap-daterangepicker/date.js',
-                'assets/plugins/bootstrap-daterangepicker/daterangepicker.js',
                 'assets/plugins/gritter/js/jquery.gritter.js',
                 'assets/plugins/fullcalendar/fullcalendar/fullcalendar.min.js'
             );
