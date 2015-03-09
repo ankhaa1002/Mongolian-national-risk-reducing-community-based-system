@@ -28,6 +28,7 @@
     <link href="{{ asset('assets/plugins/jqvmap/jqvmap/jqvmap.css')}}" rel="stylesheet" type="text/css" media="screen"/>
     <link rel="stylesheet" type="text/css" href="{{asset('assets/plugins/bootstrap-datepicker/css/datepicker.css')}}" />
     <link rel="stylesheet" type="text/css" href="{{asset('assets/plugins/select2/select2_metro.css')}}" />
+    <link href="{{asset('assets/plugins/jquery-pnofity/pnotify.custom.min.css')}}" rel="stylesheet" type="text/css"/>
     @if(isset($css))
     @foreach($css as $style)
     <link href="{{asset(''.$style.'')}}" rel="stylesheet" type="text/css"/>

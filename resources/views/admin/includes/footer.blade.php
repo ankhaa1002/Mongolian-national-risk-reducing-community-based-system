@@ -1,6 +1,6 @@
 <!-- BEGIN FOOTER -->
 	<div class="footer">
-		2013 &copy; Metronic by keenthemes.
+		{{ date('Y') }} &copy; Онцгой байдлын ерөнхий газар
 		<div class="span pull-right">
 			<span class="go-top"><i class="icon-angle-up"></i></span>
 		</div>
@@ -28,6 +28,7 @@
         <script type="text/javascript" src="{{asset('assets/plugins/bootstrap-datepicker/js/bootstrap-datepicker.js')}}"></script>
         <script src="{{asset('assets/plugins/bootstrap-daterangepicker/date.js')}}" type="text/javascript"></script>
         <script src="{{asset('assets/plugins/bootstrap-daterangepicker/daterangepicker.js')}}" type="text/javascript"></script>
+        <script src="{{asset('assets/plugins/jquery-pnofity/pnotify.custom.min.js')}}" type="text/javascript"></script>
         
         @if(isset($js))
         @foreach($js as $jscript)

@@ -27,26 +27,48 @@
 
             <div class="portlet-body form">
                 <!-- BEGIN FORM-->
-                <form id="searchNewsForm" action="#" class="form-horizontal">
+                <form id="searchPageForm" action="#" class="form-horizontal">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="row-fluid">
                         <div class="span6">
                             <div class="control-group">
-                                <label for="name" class="control-label">Нэр</label>
+                                <label for="lastname" class="control-label">Овог</label>
                                 <div class="controls">
-                                    <input id="name" name="name" type="text" class="m-wrap span12" placeholder="">
+                                    <input id="lastname" name="name" type="text" class="m-wrap span12" placeholder="">
                                 </div>
                             </div>
                         </div>
-
-                        <div class="span6 ">
+                        <div class="span6">
                             <div class="control-group">
-                                <label class="control-label">Ангилал</label>
+                                <label for="firstname" class="control-label">Нэр</label>
                                 <div class="controls">
-                                    <select id='newsCategory' class="m-wrap span12">
+                                    <input id="firstname" name="name" type="text" class="m-wrap span12" placeholder="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='row-fluid'>
+                        <div class="span6">
+                            <div class="control-group">
+                                <label for="aimag" class="control-label">Аймаг</label>
+                                <div class="controls">
+                                    <select id="aimag" class="m-wrap span12">
                                         <option></option>
-                                        @foreach($categories as $cat)
-                                        <option value="{{$cat['id']}}">{{$cat['name']}}</option>
+                                        @foreach($aimags as $aimag)
+                                        <option value="{{$aimag['id']}}">{{$aimag['name']}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span6">
+                            <div class="control-group">
+                                <label for="district" class="control-label">Дүүрэг</label>
+                                <div class="controls">
+                                    <select id="district" class="m-wrap span12">
+                                        <option></option>
+                                        @foreach($districts as $district)
+                                        <option value="{{$district['id']}}">{{$district['name']}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -54,19 +76,14 @@
                         </div>
                     </div>
                     <div class="row-fluid">
-                        <div class="span6 ">
+                        <div class="span6">
                             <div class="control-group">
-                                <label for="date" class="control-label">Огноо</label>
-                                <div class="controls">
-                                    <input id="date" name="date" type="text" class="m-wrap span12" placeholder="">
-                                </div>
                             </div>
                         </div>
-
-                        <div class="span6 ">
+                        <div class="span6">
                             <div class="control-group">
                                 <div class="controls">
-                                    <button type="button" onclick="searchNews()" class="btn green">Хайх</button>
+                                    <button type="button" onclick="searchTeacher()" class="btn green">Хайх</button>
                                     <button type="button" onclick="clearInput()" class="btn blue">Цэвэрлэх</button>
                                 </div>
                             </div>
@@ -79,111 +96,105 @@
     </div>
     <div class="form-group col-sm-12" style="margin-bottom: 25px;">
         <div class="btn-group">
-            <button onclick="addNews()" class="btn green">
+            <button onclick="addTeacher()" class="btn green">
                 Нэмэх <i class="icon-plus"></i>
             </button>
         </div>
         <div class="btn-group">
-            <button onclick="editNews()" class="btn blue">
+            <button onclick="editTeacher()" class="btn blue">
                 Засах <i class="icon-pencil"></i>
             </button>
         </div>
         <div class="btn-group">
-            <button onclick="deleteNews()" class="btn red">
+            <button onclick="deleteTeacher()" class="btn red">
                 Устгах <i class="icon-minus"></i>
             </button>
         </div>
     </div>
 
-    <table class="table table-hover" id="newsList">
+    <table class="table table-hover" id="teacherList">
     </table>
 </div>
 
 @section('js')
 <script type="text/javascript">
-    $('#date').datepicker({
-        format: 'yyyy-mm-dd'
-    });
+    $(function () {
+        $("#aimag").select2({
+            placeholder: "Аймаг сонгох"
+        });
 
-    $('#newsCategory').select2({
-        placeholder: "Ангилал сонгох"
-    });
-
-    $('#newsList').datagrid({
-        url: 'newslist',
-        queryParams: {
-            _token: _token
-        },
-        pagination: true,
-        pageSize: 20,
-        rownumbers: true,
-        fitColumns: true,
-        singleSelect: false,
-        columns: [[
-                {field: 'ck', checkbox: true},
-                {field: 'title', title: 'Гарчиг', width: 20,
-                    formatter: function (val, row, idx) {
-                        return '<b><a href="news/' + row.id + '/edit">' + val + '</a></b>';
-                    }
-                },
-                {field: 'username', title: 'Нийтлэгч', width: 20},
-                {field: 'categories', title: 'Ангилал', width: 20,
-                    formatter: function (val, row, idx) {
-                        var cat = "";
-                        for (var i = 0; i < val.length; i++) {
-                            if (i === val.length - 1) {
-                                cat += val[i].name;
+        $("#district").select2({
+            placeholder: "Дүүрэг сонгох"
+        });
+        $('#teacherList').datagrid({
+            url: 'teacherList',
+            queryParams: {
+                _token: _token
+            },
+            pagination: true,
+            pageSize: 20,
+            height: '100%',
+            rownumbers: true,
+            fitColumns: true,
+            singleSelect: false,
+            columns: [[
+                    {field: 'ck', checkbox: true},
+                    {field: 'portrait_image', title: '', width: 10, formatter: function (value, row, index) {
+                            if (value) {
+                                return '<img width="90" height="90" src="../' + value + '" />';
                             } else {
-                                cat += val[i].name + ', ';
+                                return '<img width="110" height="90" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" />';
                             }
                         }
+                    },
+                    {field: 'lastname', title: 'Овог', width: 20},
+                    {field: 'firstname', title: 'Нэр', width: 20},
+                    {field: 'birthdate', title: 'Төрсөн огноо', width: 20},
+                    {field: 'profession', title: 'Мэргэжил', width: 20},
+                    {field: 'position', title: 'Албан тушаал', width: 20},
+                    {field: 'aimag_name', title: 'Аймаг', width: 20},
+                    {field: 'district_name', title: 'Дүүрэг', width: 20, formatter: function (value, row, index) {
+                            if (value) {
+                                return value;
+                            } else {
+                                return '<i class="icon-remove"></i>';
+                            }
+                        }
+                    },
+                    {field: 'email', title: 'Цахим хаяг', width: 20}
 
-                        return cat;
-                    }
-                },
-                {field: 'created_date', title: 'Нийтэлсэн огноо', width: 20},
-                {field: 'updated_date', title: 'Сүүлд шинэчилсэн', width: 20, formatter: function (value, row, index) {
-                        if (value === null) {
-                            return 'Одоогоор шинэчлэгдээгүй';
-                        } else {
-                            return value;
-                        }
-                    }},
-                {field: 'is_active', title: 'Нийтлэгдсэн эсэх', formatter: function (value, row, index) {
-                        if (value === 1) {
-                            return '<i class="icon-ok green"></i>';
-                        } else {
-                            return '<i class="icon-remove red"></i>';
-                        }
-                    }}
-            ]]
+                ]]
+        });
+        
+        $('#teacherList').datagrid('reload');
     });
 
-    function searchNews() {
-        $('#newsList').datagrid('load', {
+    function searchTeacher() {
+        $('#teacherList').datagrid('load', {
             _token: _token,
-            title: $('#name').val(),
-            date: $('#date').val(),
-            category: $("#newsCategory option:selected").val()
+            lastname: $('#lastname').val(),
+            firstname: $('#firstname').val(),
+            aimag_id: $("#aimag option:selected").val(),
+            district_id: $('#district option:selected').val()
         });
     }
 
-    function addNews() {
-        window.location.replace("{{ route('admin.news.create') }}");
+    function addTeacher() {
+        window.location.replace("{{ route('admin.teacher.create') }}");
     }
 
-    function editNews() {
-        var rows = $('#newsList').datagrid('getSelections');
+    function editTeacher() {
+        var rows = $('#teacherList').datagrid('getSelections');
         if (rows.length > 1) {
             alert('Олон мэдээг зэрэг засах боломжгүй!');
         } else if (rows.length === 0) {
             alert('Засах мэдээгээ сонгоно уу!');
         } else {
-            window.location.replace('news/' + rows[0].id + '/edit');
+            window.location.replace('page/' + rows[0].id + '/edit');
         }
     }
 
-    function deleteNews() {
+    function deleteTeacher() {
 
         var dialogName = '#removeDialog';
         if (!$(dialogName).length) {
@@ -191,7 +202,7 @@
         }
 
         var ids = [];
-        var rows = $('#newsList').datagrid('getSelections');
+        var rows = $('#teacherList').datagrid('getSelections');
 
         if (rows.length === 0) {
             alert('Та устгах мэдээгээ сонгоно уу!');
@@ -212,7 +223,7 @@
                 buttons: [
                     {text: 'Тийм', class: 'btn', handler: function () {
                             $.ajax({
-                                url: "{{ route('admin.news.destroy') }}",
+                                url: "{{ route('admin.page.destroy') }}",
                                 type: 'post',
                                 dataType: "json",
                                 data: {
@@ -222,7 +233,7 @@
                                 },
                                 success: function (data) {
                                     if (data) {
-                                        $('#newsList').datagrid('reload');
+                                        $('#teacherList').datagrid('reload');
                                         $(dialogName).dialog('close');
                                         new PNotify({
                                             title: 'Амжилттай!', text: 'Амжилттай устгалаа!',
@@ -243,8 +254,9 @@
     }
 
     function clearInput() {
-        document.getElementById("searchNewsForm").reset();
-        $("#newsCategory").select2("val", "");
+        document.getElementById("searchPageForm").reset();
+        $("#aimag").select2("val", "");
+        $("#district").select2("val", "");
     }
 </script>
 @stop

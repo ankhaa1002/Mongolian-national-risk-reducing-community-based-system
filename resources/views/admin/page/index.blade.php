@@ -27,10 +27,10 @@
 
             <div class="portlet-body form">
                 <!-- BEGIN FORM-->
-                <form id="searchNewsForm" action="#" class="form-horizontal">
+                <form id="searchPageForm" action="#" class="form-horizontal">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="row-fluid">
-                        <div class="span6">
+                        <div class="span4">
                             <div class="control-group">
                                 <label for="name" class="control-label">Нэр</label>
                                 <div class="controls">
@@ -39,31 +39,20 @@
                             </div>
                         </div>
 
-                        <div class="span6 ">
+                        <div class="span4">
                             <div class="control-group">
-                                <label class="control-label">Ангилал</label>
+                                <label class="control-label">Төрөл</label>
                                 <div class="controls">
-                                    <select id='newsCategory' class="m-wrap span12">
+                                    <select id='pageType' class="m-wrap span12">
                                         <option></option>
-                                        @foreach($categories as $cat)
-                                        <option value="{{$cat['id']}}">{{$cat['name']}}</option>
+                                        @foreach($pageTypes as $type)
+                                        <option value="{{$type['id']}}">{{$type['page_type_name']}}</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="row-fluid">
-                        <div class="span6 ">
-                            <div class="control-group">
-                                <label for="date" class="control-label">Огноо</label>
-                                <div class="controls">
-                                    <input id="date" name="date" type="text" class="m-wrap span12" placeholder="">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="span6 ">
+                        <div class="span4">
                             <div class="control-group">
                                 <div class="controls">
                                     <button type="button" onclick="searchNews()" class="btn green">Хайх</button>
@@ -79,38 +68,34 @@
     </div>
     <div class="form-group col-sm-12" style="margin-bottom: 25px;">
         <div class="btn-group">
-            <button onclick="addNews()" class="btn green">
+            <button onclick="addPage()" class="btn green">
                 Нэмэх <i class="icon-plus"></i>
             </button>
         </div>
         <div class="btn-group">
-            <button onclick="editNews()" class="btn blue">
+            <button onclick="editPage()" class="btn blue">
                 Засах <i class="icon-pencil"></i>
             </button>
         </div>
         <div class="btn-group">
-            <button onclick="deleteNews()" class="btn red">
+            <button onclick="deletePage()" class="btn red">
                 Устгах <i class="icon-minus"></i>
             </button>
         </div>
     </div>
 
-    <table class="table table-hover" id="newsList">
+    <table class="table table-hover" id="pageList">
     </table>
 </div>
 
 @section('js')
 <script type="text/javascript">
-    $('#date').datepicker({
-        format: 'yyyy-mm-dd'
+    $("#pageType").select2({
+        placeholder: "Төрөл сонгох"
     });
 
-    $('#newsCategory').select2({
-        placeholder: "Ангилал сонгох"
-    });
-
-    $('#newsList').datagrid({
-        url: 'newslist',
+    $('#pageList').datagrid({
+        url: 'pageList',
         queryParams: {
             _token: _token
         },
@@ -121,27 +106,14 @@
         singleSelect: false,
         columns: [[
                 {field: 'ck', checkbox: true},
-                {field: 'title', title: 'Гарчиг', width: 20,
+                {field: 'name', title: 'Гарчиг', width: 20,
                     formatter: function (val, row, idx) {
-                        return '<b><a href="news/' + row.id + '/edit">' + val + '</a></b>';
+                        console.log(row);
+                        return '<b><a href="page/' + row.id + '/edit">' + val + '</a></b>';
                     }
                 },
-                {field: 'username', title: 'Нийтлэгч', width: 20},
-                {field: 'categories', title: 'Ангилал', width: 20,
-                    formatter: function (val, row, idx) {
-                        var cat = "";
-                        for (var i = 0; i < val.length; i++) {
-                            if (i === val.length - 1) {
-                                cat += val[i].name;
-                            } else {
-                                cat += val[i].name + ', ';
-                            }
-                        }
-
-                        return cat;
-                    }
-                },
-                {field: 'created_date', title: 'Нийтэлсэн огноо', width: 20},
+                {field: 'page_type_name', title: 'Хуудасны төрөл', width: 20},
+                {field: 'created_date', title: 'Үүсгэсэн огноо', width: 20},
                 {field: 'updated_date', title: 'Сүүлд шинэчилсэн', width: 20, formatter: function (value, row, index) {
                         if (value === null) {
                             return 'Одоогоор шинэчлэгдээгүй';
@@ -149,7 +121,7 @@
                             return value;
                         }
                     }},
-                {field: 'is_active', title: 'Нийтлэгдсэн эсэх', formatter: function (value, row, index) {
+                {field: 'is_active', title: 'Идэвхтэй эсэх', formatter: function (value, row, index) {
                         if (value === 1) {
                             return '<i class="icon-ok green"></i>';
                         } else {
@@ -160,30 +132,29 @@
     });
 
     function searchNews() {
-        $('#newsList').datagrid('load', {
+        $('#pageList').datagrid('load', {
             _token: _token,
-            title: $('#name').val(),
-            date: $('#date').val(),
-            category: $("#newsCategory option:selected").val()
+            name: $('#name').val(),
+            page_type_id: $("#pageType option:selected").val()
         });
     }
 
-    function addNews() {
-        window.location.replace("{{ route('admin.news.create') }}");
+    function addPage() {
+        window.location.replace("{{ route('admin.page.create') }}");
     }
 
-    function editNews() {
-        var rows = $('#newsList').datagrid('getSelections');
+    function editPage() {
+        var rows = $('#pageList').datagrid('getSelections');
         if (rows.length > 1) {
             alert('Олон мэдээг зэрэг засах боломжгүй!');
         } else if (rows.length === 0) {
             alert('Засах мэдээгээ сонгоно уу!');
         } else {
-            window.location.replace('news/' + rows[0].id + '/edit');
+            window.location.replace('page/' + rows[0].id + '/edit');
         }
     }
 
-    function deleteNews() {
+    function deletePage() {
 
         var dialogName = '#removeDialog';
         if (!$(dialogName).length) {
@@ -191,7 +162,7 @@
         }
 
         var ids = [];
-        var rows = $('#newsList').datagrid('getSelections');
+        var rows = $('#pageList').datagrid('getSelections');
 
         if (rows.length === 0) {
             alert('Та устгах мэдээгээ сонгоно уу!');
@@ -212,7 +183,7 @@
                 buttons: [
                     {text: 'Тийм', class: 'btn', handler: function () {
                             $.ajax({
-                                url: "{{ route('admin.news.destroy') }}",
+                                url: "{{ route('admin.page.destroy') }}",
                                 type: 'post',
                                 dataType: "json",
                                 data: {
@@ -222,7 +193,7 @@
                                 },
                                 success: function (data) {
                                     if (data) {
-                                        $('#newsList').datagrid('reload');
+                                        $('#pageList').datagrid('reload');
                                         $(dialogName).dialog('close');
                                         new PNotify({
                                             title: 'Амжилттай!', text: 'Амжилттай устгалаа!',
@@ -243,8 +214,8 @@
     }
 
     function clearInput() {
-        document.getElementById("searchNewsForm").reset();
-        $("#newsCategory").select2("val", "");
+        document.getElementById("searchPageForm").reset();
+        $("#pageType").select2("val", "");
     }
 </script>
 @stop

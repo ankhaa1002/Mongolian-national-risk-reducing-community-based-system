@@ -18,6 +18,11 @@ Route::get('admin',['as'=>'adminIndex','uses'=>'AdminController@index']);
 Route::post('admin/newslist','admin\NewsController@newsList');
 Route::post('admin/news/upload',['as'=>'imageUpload','uses'=>'admin\NewsController@upload']);
 Route::resource('admin/news', 'Admin\NewsController');
-Route::resource('admin/news/category', 'Admin\NewsCategoryController');
-
-
+Route::resource('admin/newsCategory', 'Admin\NewsCategoryController');
+Route::post('admin/getCategoryList',['as'=>'categoryList','uses'=>'admin\NewsCategoryController@getCategoryList']);
+Route::post('admin/addCategory',['as'=>'addCategory','uses'=>'admin\NewsCategoryController@addCategory']);
+Route::post('admin/editCategory',['as'=>'editCategory','uses'=>'admin\NewsCategoryController@editCategory']);
+Route::resource('admin/page', 'Admin\PageController');
+Route::post('admin/pageList','admin\PageController@getPageList');
+Route::resource('admin/teacher', 'Admin\TeacherController');
+Route::post('admin/teacherList','admin\TeacherController@getTeacherList');

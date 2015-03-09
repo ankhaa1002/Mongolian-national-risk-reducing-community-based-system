@@ -20,16 +20,38 @@
                 <span class="arrow  closed"></span>
             </a>
             <ul class="sub-menu">
-                <li class="{{ Request::is('admin/news*') ? 'active' : '' }}">
+                <li class="{{ Request::is('admin/news/*') || Request::is('admin/news') ? 'active' : '' }}">
                     <a href="{{route('admin.news.index')}}">
                         <i class="icon-book"></i>
                         Мэдээ
                     </a>
                 </li>
-                <li class="{{ Request::is('admin/category') ? 'active' : '' }}">
-                    <a href="admin/news-category">
+                <li class="{{ Request::is('admin/newsCategory*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.newsCategory.index') }}">
                         <i class="icon-pushpin"></i>
-                        Мэдээний төрөл	
+                        Мэдээний ангилал
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="start {{ Request::is('admin/page*') ? 'active' : '' }} ">
+            <a href="{{route('admin.page.index')}}">
+                <i class="icon-book"></i> 
+                <span class="title">Хуудас</span>
+                <span class="selected"></span>
+            </a>
+        </li>
+        <li class="{{ Request::is('admin/teacher*') ? 'active' : '' }}">
+            <a href="javascript:;">
+                <i class="icon-user"></i> 
+                <span class="title">Хэрэглэгчийн удирдлага</span>
+                <span class="arrow  closed"></span>
+            </a>
+            <ul class="sub-menu">
+                <li class="{{ Request::is('admin/teacher*') ? 'active' : '' }}">
+                    <a href="{{route('admin.teacher.index')}}">
+                        <i class="icon-user"></i>
+                        Багш
                     </a>
                 </li>
             </ul>

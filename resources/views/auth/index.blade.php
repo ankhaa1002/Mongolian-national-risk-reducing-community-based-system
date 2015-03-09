@@ -50,22 +50,22 @@
                     <span>{{ Session::get('success') }}</span>
                 </div>
                 @endif
-                <div class="control-group">
+                <div class="control-group required">
                     <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
                     <label class="control-label visible-ie8 visible-ie9">Нэр</label>
                     <div class="controls">
                         <div class="input-icon left">
                             <i class="icon-user"></i>
-                            <input class="m-wrap placeholder-no-fix" type="text" placeholder="Нэр" name="username"/>
+                            <input class="m-wrap placeholder-no-fix required" type="text" placeholder="Нэр" name="username"/>
                         </div>
                     </div>
                 </div>
-                <div class="control-group">
+                <div class="control-group required">
                     <label class="control-label visible-ie8 visible-ie9">Түлхүүр үг</label>
                     <div class="controls">
                         <div class="input-icon left">
                             <i class="icon-lock"></i>
-                            <input class="m-wrap placeholder-no-fix" type="password" placeholder="Түлхүүр үг" name="password"/>
+                            <input class="m-wrap placeholder-no-fix required" type="password" placeholder="Түлхүүр үг" name="password"/>
                         </div>
                     </div>
                 </div>

@@ -65,6 +65,7 @@ class News extends Model {
         $news->content = $param['content'];
         $news->created_date = $param['created_date'];
         $news->featured_image = $param['featured_image'];
+        $news->is_active = $param['is_active'];
         $news->created_user = Session::get('user')->id;
         $result = $news->save();
         $news->categories()->sync($param['categories']);
@@ -78,6 +79,7 @@ class News extends Model {
         $news->created_date = $param['created_date'];
         $news->updated_date = date("Y-m-d");
         $news->featured_image = $param['featured_image'];
+        $news->is_active = $param['is_active'];
         $news->created_user = Session::get('user')->id;
         $result = $news->update();
         $news->categories()->sync($param['categories']);

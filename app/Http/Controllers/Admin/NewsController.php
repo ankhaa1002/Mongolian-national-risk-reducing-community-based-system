@@ -15,7 +15,7 @@ class NewsController extends Controller {
     
     public function __construct() {
         CheckAuth::check();
-        $this->categories = NewsCategory::getAllCategory();
+        $this->categories = NewsCategory::all();
     }
 
     /**
@@ -114,9 +114,10 @@ class NewsController extends Controller {
             'content' => $request->input('editor1'),
             'categories' => $request->input('categories'),
             'created_date' => $request->input('created_date'),
-            'featured_image' => $imgUrl
+            'featured_image' => $imgUrl,
+            'is_active' => $request->input('is_active') == "on" ? 1 : 0
         );
-
+        
         $isSaved = News::saveNews($param);
         if ($isSaved) {
             return Redirect::to('admin/news')->with('success', 'Мэдээ амжилттай нийтлэгдлээ!');
@@ -154,7 +155,6 @@ class NewsController extends Controller {
      * @return Response
      */
     public function edit($id) {
-
         $i = 0;
         $categories = $this->categories;
         $selectedCategories = News::getNews($id)->categories()->get();
@@ -200,7 +200,8 @@ class NewsController extends Controller {
             'categories' =>$request->input('categories'),
             'content' => $request->input('editor1'),
             'created_date' => $request->input('created_date'),
-            'featured_image' => $imgUrl == null ? $news->featured_image : $imgUrl
+            'featured_image' => $imgUrl == null ? $news->featured_image : $imgUrl,
+            'is_active' => $request->input('is_active') == "on" ? 1 : 0
         );
         
         $isSaved = News::updateNews($params, $id);

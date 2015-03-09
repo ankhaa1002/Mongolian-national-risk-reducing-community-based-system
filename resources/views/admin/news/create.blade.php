@@ -44,11 +44,19 @@
                         <!--/span-->
                     </div>
                     <div class="row-fluid">
-                        <div class="span6 ">
+                        <div class="span5">
                             <div class="control-group">
                                 <label class="control-label" for="lastName">Огноо</label>
                                 <div class="controls">
                                     <input type="text" name="created_date" id="created_date" class="m-wrap span12" placeholder="">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="span1 ">
+                            <div class="control-group">
+                                <label class="control-label" for="lastName">Нийтлэх</label>
+                                <div class="controls">
+                                    <input type="checkbox" name="is_active" id="is_active" class="m-wrap span12" checked="checked">
                                 </div>
                             </div>
                         </div>

@@ -9,7 +9,7 @@
             </div>
             <div class="portlet-body form">
                 <!-- BEGIN FORM-->
-                {!! Form::model($news,array('method'=>'PATCH','route'=>array('admin.news.update',$news->id),'files' => true,'id'=>'editNewsForm')) !!}
+                {!! Form::model($page,array('method'=>'PATCH','route'=>array('admin.page.update',$page->id),'id'=>'editPageForm')) !!}
                     <div class="alert alert-error hide">
                         <button class="close" data-dismiss="alert"></button>
                         Та доор алдаануудыг засна уу
@@ -20,7 +20,7 @@
                             <div class="control-group">
                                 <label class="control-label" for="firstName">Гарчиг</label>
                                 <div class="controls">
-                                    <input type="text" name="title" id="title" class="m-wrap span12" value="{{ $news->title }}" placeholder="">
+                                    <input type="text" name="title" id="title" class="m-wrap span12" value="{{ $page->name }}" placeholder="">
                                 </div>
                             </div>
                         </div>
@@ -29,9 +29,9 @@
                             <div class="control-group">
                                 <label class="control-label" for="lastName">Мэдээний ангилал</label>
                                 <div class="controls">
-                                    <select id="categories" name="categories[]" class="m-wrap span12" multiple="multiple">
-                                        @foreach($categories as $cat)
-                                        <option @if(isset($cat['selected']))selected="{{ $cat['selected'] }}"@endif value="{{$cat['id']}}">{{$cat['name']}}</option>
+                                    <select id="pageTypes" name="pageTypes[]" class="m-wrap span12">
+                                        @foreach($pageTypes as $type)
+                                        <option @if(isset($type['selected']))selected="{{ $type['selected'] }}"@endif value="{{$type['id']}}">{{$type['page_type_name']}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -44,36 +44,15 @@
                             <div class="control-group">
                                 <label class="control-label" for="lastName">Огноо</label>
                                 <div class="controls">
-                                    <input type="text" name="created_date" value="{{ $news->created_date }}" id="created_date" class="m-wrap span12" placeholder="">
+                                    <input type="text" name="created_date" value="{{ $page->created_date }}" id="created_date" class="m-wrap span12" placeholder="">
                                 </div>
                             </div>
                         </div>
                         <div class="span1 ">
                             <div class="control-group">
-                                <label class="control-label" for="lastName">Нийтлэх</label>
+                                <label class="control-label" for="lastName">Идэвхтэй эсэх</label>
                                 <div class="controls">
-                                    <input type="checkbox" name="is_active" id="is_active" class="m-wrap span12" {{ $news->is_active == "1" ? "checked" : "" }}>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="span6 ">
-                            <div class="control-group">
-                                <label class="control-label" for="firstName">Нүүрний зураг</label>
-                                <div class="fileupload fileupload-new" data-provides="fileupload"><input type="hidden">
-                                    <div class="fileupload-new thumbnail pull-left" style="width: 100px; height: 70px;margin-right: 10px;">
-                                        @if($news->featured_image != null)
-                                        <img src="{{ asset(''.$news->featured_image.'') }}" alt="">
-                                        @else
-                                        <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image" alt="">
-                                        @endif
-                                    </div>
-                                    <div class="fileupload-preview fileupload-exists thumbnail" style="max-width: 200px; max-height: 150px; line-height: 20px;"></div>
-                                    <div>
-                                        <span class="btn btn-file"><span class="fileupload-new" style="margin-top: 20px;">Зураг сонгох</span>
-                                            <span class="fileupload-exists">Өөрчлөх</span>
-                                            <input id="featured_image" name="featured_image" type="file" class="default"></span>
-                                        <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Устгах</a>
-                                    </div>
+                                    <input type="checkbox" name="is_active" id="is_active" class="m-wrap span12" {{ $page->is_active == "1" ? "checked" : "" }}>
                                 </div>
                             </div>
                         </div>
@@ -84,7 +63,7 @@
                                 <label class="control-label">Контент</label>
                                 <div class="controls">
                                     <textarea name="editor1" id="editor1" rows="10" cols="80">
-                                        {{ $news->content }}
+                                        {{ $page->content }}
                                     </textarea>
                                 </div>
                             </div>
@@ -109,12 +88,12 @@
     CKEDITOR.replace('editor1', {
         filebrowserUploadUrl: "{{route('imageUpload')}}?_token=" + token
     });
-    $("#categories").select2();
+    $("#pageTypes").select2();
     $('#created_date').datepicker({
         format: 'yyyy-mm-dd'
     });
 
-    var form = $('#editNewsForm');
+    var form = $('#editPageForm');
     var error1 = $('.alert-error', form);
     var success1 = $('.alert-success', form);
 
@@ -128,15 +107,12 @@
                 maxlength: 1000,
                 required: true
             },
-            categories: {
+            pageTypes: {
                 required: true
             },
             created_date: {
                 required: true,
                 date: true
-            },
-            featured_image: {
-                extension: "jpg|jpeg|png|gif"
             }
         },
         messages: {
@@ -148,7 +124,7 @@
                 required: "Та дээр талбарыг заавал бөглөнө үү",
                 date: 'Та заавал огноо оруулах ёстой'
             },
-            categories: {
+            pageTypes: {
                 required: 'Та дээр талбарыг заавал бөглөнө үү'
             }
         },
@@ -178,16 +154,16 @@
         }
     });
 
-    $('#editNewsForm').submit(function () {
+    $('#editPageForm').submit(function () {
         if (!form.valid()) {
             e.preventDefault();
         } else {
-            $('#editNewsForm')[0].submit();
+            $('#editPageForm')[0].submit();
         }
     });
 
     function backToList() {
-        window.location.replace("{{route('admin.news.index')}}");
+        window.location.replace("{{route('admin.page.index')}}");
     }
 
 </script>
