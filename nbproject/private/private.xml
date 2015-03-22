@@ -12,11 +12,10 @@
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/wamp/www/ontsgoi/app/Http/Controllers/Admin/TeacherController.php</file>
-            <file>file:/C:/wamp/www/ontsgoi/resources/views/admin/teacher/index.blade.php</file>
-            <file>file:/C:/wamp/www/ontsgoi/resources/views/admin/teacher/create.blade.php</file>
+            <file>file:/C:/wamp/www/ontsgoi/resources/views/teacher/lesson/create.blade.php</file>
+            <file>file:/C:/wamp/www/ontsgoi/app/Http/Controllers/Teacher/LessonController.php</file>
+            <file>file:/C:/wamp/www/ontsgoi/resources/views/admin/news/create.blade.php</file>
             <file>file:/C:/wamp/www/ontsgoi/app/Http/Controllers/Admin/NewsController.php</file>
-            <file>file:/C:/wamp/www/ontsgoi/app/Model/Teacher.php</file>
         </group>
     </open-files>
 </project-private>

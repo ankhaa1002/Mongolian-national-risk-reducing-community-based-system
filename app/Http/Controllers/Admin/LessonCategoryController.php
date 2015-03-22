@@ -1,15 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Model\NewsCategory;
 use Illuminate\Http\Request;
+use App\Model\LessonCategory;
 use App\Http\Middleware\CheckAuth;
-class NewsCategoryController extends Controller {
+class LessonCategoryController extends Controller {
 
-    
     public function __construct() {
         CheckAuth::check();
     }
@@ -19,9 +18,10 @@ class NewsCategoryController extends Controller {
      *
      * @return Response
      */
+    
     public function index() {
-        $view = view('admin.newsCategory.index');
-        $view->title = 'Мэдээний ангилал';
+        $view = view('admin.lessonCategory.index');
+        $view->title = 'Хичээлийн төрлийн жагсаалт';
         $view->js = array(
             'assets/plugins/jquery-easyui/jquery.easyui.min.js',
             'assets/plugins/jquery-easyui/jquery.datagrid.js',
@@ -37,30 +37,22 @@ class NewsCategoryController extends Controller {
         return $view;
     }
 
-    public function getCategoryList(Request $request) {
-        $name = $request->input('name');
+    public function lessonCategoryList(Request $request) {
         $param = array(
             'page' => $request->input('page'),
-            'rows' => $request->input('rows')
+            'rows' => $request->input('rows'),
+            'name' => $request->input('name')
         );
-        $categories = NewsCategory::getAllCategory($name,$param);
-        return $categories;
+
+        $list = LessonCategory::getLessonCategoryList($param);
+
+        echo json_encode($list);
     }
 
-    public function addCategory() {
+    public function addLessonCategory() {
         $response = array(
-            'Html' => view('admin.newsCategory.create')->render(),
-            'title' => 'Ангилал нэмэх',
-            'save_btn' => 'Хадгалах',
-            'close_btn' => 'Хаах'
-        );
-        echo json_encode($response);
-    }
-
-    public function editCategory() {
-        $response = array(
-            'Html' => view('admin.newsCategory.edit')->render(),
-            'title' => 'Ангилал засах',
+            'Html' => view('admin.lessonCategory.create')->render(),
+            'title' => 'Төрөл нэмэх',
             'save_btn' => 'Хадгалах',
             'close_btn' => 'Хаах'
         );
@@ -83,10 +75,10 @@ class NewsCategoryController extends Controller {
      */
     public function store(Request $request) {
         $param = $request->all();
-        $category = new NewsCategory();
-        $category->name = $param['name'];
+        $lessonCategory = new LessonCategory();
+        $lessonCategory->name = $param['name'];
         try {
-            $result = $category->save();
+            $result = $lessonCategory->save();
             if ($result) {
                 $response = array(
                     'status' => 'success',
@@ -101,7 +93,7 @@ class NewsCategoryController extends Controller {
         } catch (\Exception $e) {
             $response = array(
                 'status' => 'error',
-                'message' => 'Ангилалын нэр давхардаж байна!'
+                'message' => 'Төрлийн нэр давхардаж байна!'
             );
         }
 
@@ -126,11 +118,11 @@ class NewsCategoryController extends Controller {
      * @return Response
      */
     public function edit($id) {
-        $view = view('admin.newsCategory.edit');
-        $view->category = NewsCategory::find($id);
+        $view = view('admin.lessonCategory.edit');
+        $view->category = LessonCategory::find($id);
         $response = array(
             'Html' => $view->render(),
-            'title' => 'Ангилал засах',
+            'title' => 'Төрөл засах',
             'save_btn' => 'Хадгалах',
             'close_btn' => 'Хаах'
         );
@@ -143,9 +135,9 @@ class NewsCategoryController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function update($id, Request $request) {
+    public function update($id,Request $request) {
         $param = $request->all();
-        $category = NewsCategory::find($id);
+        $category = LessonCategory::find($id);
         $category->name = $param['name'];
         try {
             $result = $category->update();
@@ -177,10 +169,10 @@ class NewsCategoryController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id,Request $request) {
+    public function destroy($id, Request $request) {
         $result = true;
         foreach ($request->input('ids') as $id) {
-            NewsCategory::destroy($id);
+            LessonCategory::destroy($id);
         }
 
         echo json_encode($result);

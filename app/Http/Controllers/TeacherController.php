@@ -2,26 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
+use App\Model\Teacher;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 
-class AdminController extends Controller {
+class TeacherController extends Controller {
 
     public function showLogin() {
-        if (!Session::has('user')) {
-            return view('admin.login');
+        if (!Session::has('teacher')) {
+            return view('teacher.login');
         } else {
-            return Redirect::to('admin');
+            return Redirect::to('adminTeacher');
         }
     }
 
     public function index() {
-        if (Session::has('user')) {
-            $view = view('admin.index');
-            $view->title = 'Удирдлагын хэсэг';
+        if (Session::has('teacher')) {
+            $view = view('teacher.index');
+            $view->title = 'Багшийн удирдлагын хэсэг';
             $view->js = array(
                 'assets/plugins/jqvmap/jqvmap/jquery.vmap.js',
                 'assets/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js',
@@ -38,30 +40,27 @@ class AdminController extends Controller {
             );
             return $view;
         } else {
-            return Redirect::to('auth');
+            return Redirect::to('teacherLogin');
         }
     }
 
-    public function checkUser(Request $request) {
-        $users = User::getAllUser();
+    public function checkTeacher(Request $request) {
+        $teachers = Teacher::all();
         $username = $request->input('username');
         $password = $request->input('password');
-        foreach ($users as $user) {
-            if ($user['user_name'] == $username && Hash::check($password, $user['password'])) {
-                if ($user->is_active == 0) {
-                    return Redirect::to('auth')->with('fail', 'Та нэвтрэх эрхгүй байна!');
-                }
-                Session::put('user', $user);
-                return Redirect::to('admin')->with('message', 'Тавтай морил!');
+        foreach ($teachers as $teacher) {
+            if ($teacher['username'] == $username && Hash::check($password, $teacher['password'])) {
+                Session::put('teacher', $teacher);
+                return Redirect::to('adminTeacher')->with('message', 'Тавтай морил!');
             }
         }
 
-        return Redirect::to('auth')->with('fail', 'Нэр эсвэл нууц үг буруу байна!');
+        return Redirect::to('teacherLogin')->with('fail', 'Нэр эсвэл нууц үг буруу байна!');
     }
 
     public function logOut() {
-        Session::forget('user');
-        return Redirect::to('auth')->with('success', 'Амжилттай удирдлагаас гарлаа!');
+        Session::forget('teacher');
+        return Redirect::to('teacherLogin')->with('success', 'Амжилттай удирдлагаас гарлаа!');
     }
 
 }

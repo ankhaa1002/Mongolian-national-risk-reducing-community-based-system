@@ -1,7 +1,6 @@
 @extends('admin.layouts.base')
 
 @section('content')
-
 <div class="row-fluid">
     <div class="span12">
         @if(Session::has('success'))
@@ -27,68 +26,27 @@
 
             <div class="portlet-body form">
                 <!-- BEGIN FORM-->
-                <form id="searchTeacherForm" action="#" class="form-horizontal">
+                <form id="searchUserForm" action="#" class="form-horizontal">
                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="row-fluid">
                         <div class="span6">
                             <div class="control-group">
-                                <label for="lastname" class="control-label">Овог</label>
+                                <label for="username" class="control-label">Хэрэглэгчийн нэр</label>
                                 <div class="controls">
-                                    <input id="lastname" name="name" type="text" class="m-wrap span12" placeholder="">
+                                    <input id="username" name="username" type="text" class="m-wrap span12" placeholder="">
                                 </div>
                             </div>
                         </div>
                         <div class="span6">
                             <div class="control-group">
-                                <label for="firstname" class="control-label">Нэр</label>
                                 <div class="controls">
-                                    <input id="firstname" name="name" type="text" class="m-wrap span12" placeholder="">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class='row-fluid'>
-                        <div class="span6">
-                            <div class="control-group">
-                                <label for="aimag" class="control-label">Аймаг</label>
-                                <div class="controls">
-                                    <select id="aimag" class="m-wrap span12">
-                                        <option></option>
-                                        @foreach($aimags as $aimag)
-                                        <option value="{{$aimag['id']}}">{{$aimag['name']}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="span6">
-                            <div class="control-group">
-                                <label for="district" class="control-label">Дүүрэг</label>
-                                <div class="controls">
-                                    <select id="district" class="m-wrap span12">
-                                        <option></option>
-                                        @foreach($districts as $district)
-                                        <option value="{{$district['id']}}">{{$district['name']}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row-fluid">
-                        <div class="span6">
-                            <div class="control-group">
-                            </div>
-                        </div>
-                        <div class="span6">
-                            <div class="control-group">
-                                <div class="controls">
-                                    <button type="button" onclick="searchTeacher()" class="btn green">Хайх</button>
+                                    <button type="button" onclick="searchUser()" class="btn green">Хайх</button>
                                     <button type="button" onclick="clearInput()" class="btn blue">Цэвэрлэх</button>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                 </form>
                 <!-- END FORM-->  
             </div>
@@ -96,38 +54,31 @@
     </div>
     <div class="form-group col-sm-12" style="margin-bottom: 25px;">
         <div class="btn-group">
-            <button onclick="addTeacher()" class="btn green">
+            <button onclick="addUser()" class="btn green">
                 Нэмэх <i class="icon-plus"></i>
             </button>
         </div>
         <div class="btn-group">
-            <button onclick="editTeacher()" class="btn blue">
+            <button onclick="editUser()" class="btn blue">
                 Засах <i class="icon-pencil"></i>
             </button>
         </div>
         <div class="btn-group">
-            <button onclick="deleteTeacher()" class="btn red">
+            <button onclick="deleteUser()" class="btn red">
                 Устгах <i class="icon-minus"></i>
             </button>
         </div>
     </div>
 
-    <table class="table table-hover" id="teacherList">
+    <table class="table table-hover" id="userList">
     </table>
 </div>
 
 @section('js')
 <script type="text/javascript">
     $(function () {
-        $("#aimag").select2({
-            placeholder: "Аймаг сонгох"
-        });
-
-        $("#district").select2({
-            placeholder: "Дүүрэг сонгох"
-        });
-        $('#teacherList').datagrid({
-            url: 'teacherList',
+        $('#userList').datagrid({
+            url: 'userList',
             queryParams: {
                 _token: _token
             },
@@ -139,62 +90,46 @@
             singleSelect: false,
             columns: [[
                     {field: 'ck', checkbox: true},
-                    {field: 'portrait_image', title: '', width: 10, formatter: function (value, row, index) {
-                            if (value) {
-                                return '<img width="90" height="90" src="../' + value + '" />';
-                            } else {
-                                return '<img width="110" height="90" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" />';
-                            }
-                        }
-                    },
+                    {field: 'user_name', title: 'Хэрэглэгчийн нэр', width: 10},
                     {field: 'lastname', title: 'Овог', width: 20},
                     {field: 'firstname', title: 'Нэр', width: 20},
-                    {field: 'birthdate', title: 'Төрсөн огноо', width: 20},
-                    {field: 'profession', title: 'Мэргэжил', width: 20},
-                    {field: 'position', title: 'Албан тушаал', width: 20},
-                    {field: 'aimag_name', title: 'Аймаг', width: 20},
-                    {field: 'district_name', title: 'Дүүрэг', width: 20, formatter: function (value, row, index) {
-                            if (value) {
-                                return value;
-                            } else {
-                                return '<i class="icon-remove"></i>';
-                            }
+                    {field: 'email', title: 'Цахим хаяг', width: 20},
+                    {field: 'is_active', title: 'Идэвхтэй эсэх', formatter: function (value, row, index) {
+                        if (value === 1) {
+                            return '<i class="icon-ok green"></i>';
+                        } else {
+                            return '<i class="icon-remove red"></i>';
                         }
-                    },
-                    {field: 'email', title: 'Цахим хаяг', width: 20}
-
+                    }}
                 ]]
         });
-        
-        $('#teacherList').datagrid('reload');
+
+        $('#userList').datagrid('reload');
     });
 
-    function searchTeacher() {
-        $('#teacherList').datagrid('load', {
+    function searchUser() {
+        $('#userList').datagrid('load', {
             _token: _token,
-            lastname: $('#lastname').val(),
-            firstname: $('#firstname').val(),
-            aimag_id: $("#aimag option:selected").val(),
-            district_id: $('#district option:selected').val()
+            username: $('#username').val()
         });
     }
 
-    function addTeacher() {
-        window.location.replace("{{ route('admin.teacher.create') }}");
+    function addUser() {
+        window.location.replace("{{ route('admin.user.create') }}");
     }
 
-    function editTeacher() {
-        var rows = $('#teacherList').datagrid('getSelections');
+    function editUser() {
+        var rows = $('#userList').datagrid('getSelections');
         if (rows.length > 1) {
             alert('Олон мэдээг зэрэг засах боломжгүй!');
         } else if (rows.length === 0) {
             alert('Засах мэдээгээ сонгоно уу!');
         } else {
-            window.location.replace('teacher/' + rows[0].id + '/edit');
+            window.location.replace('user/' + rows[0].id + '/edit');
         }
     }
 
-    function deleteTeacher() {
+    function deleteUser() {
 
         var dialogName = '#removeDialog';
         if (!$(dialogName).length) {
@@ -202,7 +137,7 @@
         }
 
         var ids = [];
-        var rows = $('#teacherList').datagrid('getSelections');
+        var rows = $('#userList').datagrid('getSelections');
 
         if (rows.length === 0) {
             alert('Та устгах мэдээгээ сонгоно уу!');
@@ -223,7 +158,7 @@
                 buttons: [
                     {text: 'Тийм', class: 'btn', handler: function () {
                             $.ajax({
-                                url: "{{ route('admin.teacher.destroy') }}",
+                                url: "{{ route('admin.user.destroy') }}",
                                 type: 'post',
                                 dataType: "json",
                                 data: {
@@ -233,7 +168,7 @@
                                 },
                                 success: function (data) {
                                     if (data) {
-                                        $('#teacherList').datagrid('reload');
+                                        $('#userList').datagrid('reload');
                                         $(dialogName).dialog('close');
                                         new PNotify({
                                             title: 'Амжилттай!', text: 'Амжилттай устгалаа!',
@@ -254,9 +189,7 @@
     }
 
     function clearInput() {
-        document.getElementById("searchTeacherForm").reset();
-        $("#aimag").select2("val", "");
-        $("#district").select2("val", "");
+        document.getElementById("searchUserForm").reset();
     }
 </script>
 @stop

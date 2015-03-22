@@ -71,7 +71,7 @@
                                     <div class="control-group">
                                         <label for="company_name" class="control-label">Байгууллагын нэр<span class="required">*</span></label>
                                         <div class="controls">
-                                            <input id="company_name" name="company_name" max="255" type="text" class="m-wrap span12" placeholder="Байгууллагын нэр" required>
+                                            <input id="company_name" name="company_name" maxlength="255" type="text" class="m-wrap span12" placeholder="Байгууллагын нэр" required>
                                         </div>
                                     </div>
                                 </div>

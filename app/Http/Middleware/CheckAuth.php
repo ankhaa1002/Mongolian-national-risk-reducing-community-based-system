@@ -26,5 +26,13 @@ class CheckAuth {
             exit;
         }
     }
+    
+    public static function checkTeacher(){
+        if (!Session::has('teacher')) {
+            $url = route('teacherLogin');
+            header("Location: ".$url);
+            exit;
+        }
+    }
 
 }

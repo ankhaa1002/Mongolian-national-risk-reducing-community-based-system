@@ -18,6 +18,7 @@ class TeacherController extends Controller {
     public $aimags = null;
     public $districts = null;
     public $genders = null;
+
     public function __construct() {
         CheckAuth::check();
         $this->aimags = Aimag::all();
@@ -92,21 +93,20 @@ class TeacherController extends Controller {
     public function store(Request $request) {
         $param = $request->all();
         $imgUrl = null;
-        if($request->file('portrait_image') != null){
+        if ($request->file('portrait_image') != null) {
             $imgUrl = $this->saveImage($request->file('portrait_image'));
         }
-        
+
         $param['portrait_url'] = $imgUrl;
         $isSaved = Teacher::saveTeacher($param);
-        
+
         if ($isSaved) {
             return Redirect::to('admin/teacher')->with('success', 'Амжилттай хадгаллаа!');
         } else {
             return Redirect::to('admin/teacher')->with('failed', 'Алдаа гарлаа!');
         }
-        
     }
-    
+
     public function saveImage($file) {
         $imgUrl = "";
         $prenumber = rand(9999999, 99999999999999);
@@ -136,7 +136,25 @@ class TeacherController extends Controller {
      * @return Response
      */
     public function edit($id) {
-        //
+        $teacher = Teacher::find($id);
+        $view = view('admin.teacher.edit', compact('teacher'));
+
+        $view->title = 'Багшийн мэдээлэл засах';
+        $view->teacherInfo = TeacherInfo::find($teacher->id);
+        $view->address = \App\Model\Address::find($view->teacherInfo->id);
+        $view->aimags = $this->aimags;
+        $view->districts = $this->districts;
+        $view->genders = $this->genders;
+        $view->js = array(
+            'assets/plugins/ckeditor/ckeditor.js',
+            'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.js',
+            'assets/plugins/jquery-validation/dist/jquery.validate.min.js',
+            'assets/plugins/jquery-validation/dist/additional-methods.min.js'
+        );
+        $view->css = array(
+            'assets/plugins/bootstrap-fileupload/bootstrap-fileupload.css'
+        );
+        return $view;
     }
 
     /**
@@ -145,8 +163,21 @@ class TeacherController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function update($id) {
-        //
+    public function update($id, Request $request) {
+        $param = $request->all();
+        $imgUrl = null;
+        if ($request->file('portrait_image') != null) {
+            $imgUrl = $this->saveImage($request->file('portrait_image'));
+        }
+
+        $param['portrait_url'] = $imgUrl;
+        $isSaved = Teacher::updateTeacher($id, $param);
+
+        if ($isSaved) {
+            return Redirect::to('admin/teacher')->with('success', 'Амжилттай хадгаллаа!');
+        } else {
+            return Redirect::to('admin/teacher')->with('failed', 'Алдаа гарлаа!');
+        }
     }
 
     /**
@@ -155,8 +186,13 @@ class TeacherController extends Controller {
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id) {
-        //
+    public function destroy($id,Request $request) {
+        $result = true;
+        foreach ($request->input('ids') as $id) {
+            Teacher::destroy($id);
+        }
+
+        echo json_encode($result);
     }
 
 }
