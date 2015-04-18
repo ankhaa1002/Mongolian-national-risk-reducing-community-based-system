@@ -7,7 +7,7 @@
 <ul class="breadcrumb">
     <li>
         <i class="icon-home"></i>
-        <a href="index.html">Удирдлага</a> 
+        <a href="{{ route('adminIndex') }}">Удирдлага</a> 
         <i class="icon-angle-right"></i>
     </li>
     <li><a href="#">

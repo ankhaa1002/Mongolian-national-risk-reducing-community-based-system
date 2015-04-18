@@ -55,13 +55,22 @@ Route::resource('admin/lessonCategory', 'Admin\LessonCategoryController');
 Route::post('admin/lessonCategoryList',['as'=>'lessonCategoryList','uses'=>'admin\LessonCategoryController@lessonCategoryList']);
 Route::post('admin/addLessonCategory',['as'=>'addLessonCategory','uses'=>'admin\LessonCategoryController@addLessonCategory']);
 
+/**
+ * Config routes
+ */
+Route::resource('admin/config', 'Admin\ConfigController');
+
 /*
  * Lesson channel route
  */
 Route::resource('admin/lessonChannel', 'Admin\LessonChannelController');
 Route::post('admin/lessonChannelList',['as'=>'lessonChannelList','uses'=>'admin\LessonChannelController@lessonChannelList']);
 Route::post('admin/addLessonChannel',['as'=>'addLessonChannel','uses'=>'admin\LessonChannelController@addLessonChannel']);
-
+/**
+ * Lesson route
+ */
+Route::resource('admin/lesson', 'Admin\LessonController');
+Route::post('admin/lessonlist','Admin\LessonController@allLessons');
 /**
  * Teacher Controller
  */
@@ -69,8 +78,35 @@ Route::get('teacherLogin', ['as'=>'teacherLogin','uses'=>'TeacherController@show
 Route::get('adminTeacher', ['as'=>'adminTeacher','uses'=>'TeacherController@index']);
 Route::post('teacherLogin','TeacherController@checkTeacher');
 Route::get('teacherLogout',['as'=>'teacherLogout','uses'=>'TeacherController@logOut']);
-
+Route::post('adminTeacher/lesson/upload',['as'=>'teacherImageUpload','uses'=>'Teacher\LessonController@upload']);
 /**
  * Teacher Lesson Controller
  */
 Route::resource('adminTeacher/lesson', 'Teacher\LessonController');
+Route::post('adminTeacher/lessonlist','Teacher\LessonController@lessonList');
+
+/**
+ * Statistic
+ */
+Route::get('adminTeacher/categoryStat','TeacherController@categoryStat');
+Route::get('adminTeacher/channelStat','TeacherController@channelStat');
+
+/*
+ * Report routes
+ */
+Route::get('admin/lessonByCategory','Admin\ReportController@lessonByCategoryReport');
+Route::get('admin/lessonByChannel','Admin\ReportController@lessonByChannelReport');
+Route::get('statistics',['as'=>'statistics','uses'=>'Front\ReportController@index']);
+/*
+ * Main routes
+ */
+Route::get('/',['as'=>'index','uses'=>'MainController@index']);
+Route::resource('news', 'Front\NewsController');
+Route::resource('category', 'Front\CategoryController');
+Route::resource('lesson', 'Front\LessonController');
+Route::resource('teacher', 'Front\TeacherController');
+Route::resource('lesson/category', 'Front\LessonCategoryController');
+Route::resource('lesson/channel', 'Front\LessonChannelController');
+Route::get('pages/{slug}', ['as'=>'pages','uses'=>'Front\PageController@show']);
+Route::get('aimag/{id}', ['as'=>'aimag','uses'=>'Front\AffiliationController@showAimag']);
+Route::get('district/{id}', ['as'=>'district','uses'=>'Front\AffiliationController@showDistrict']);

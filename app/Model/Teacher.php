@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Model\TeacherInfo;
 use App\Model\Address;
 use Illuminate\Support\Facades\Hash;
+
 class Teacher extends Model {
 
     public $timestamps = false;
@@ -53,7 +54,7 @@ class Teacher extends Model {
         if ($param['password'] != "") {
             $teacher->password = Hash::make($param['password']);
         }
-        
+
         $teacher->teacherInfo->firstname = $param['firstname'];
         $teacher->teacherInfo->lastname = $param['lastname'];
         $teacher->teacherInfo->birthdate = $param['birthdate'];
@@ -72,17 +73,15 @@ class Teacher extends Model {
         }
         $teacher->teacherInfo->profession = $param['profession'];
         $teacher->teacherInfo->teacher_id = $teacher->id;
-        
+
         $teacher->teacherInfo->address->aimag_id = $param['aimag'];
-        if (isset($param['district'])) {
-            $teacher->teacherInfo->address->district_id = $param['district'];
+        $teacher->teacherInfo->address->district_id = isset($param['district']) ? $param['district'] : null;
+        if ($param['address'] != "") {
+            $teacher->teacherInfo->address->address_detail = $param['address'];
         }
-        if ($param['address']!= "") {
-            $teacher->teacherInfo->address->address_detail = $param['address'] ;
-        }
-        
+
         $result = $teacher->push();
-        
+
         return $result;
     }
 

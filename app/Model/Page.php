@@ -32,7 +32,7 @@ class Page extends Model {
                 ->skip($offset)
                 ->take($rows)
                 ->orderBy('created_date')
-                ->select('page.id','slug','name','content','is_active','created_date','updated_date','page_type_id','page_type.page_type_name')
+                ->select('page.id','page.slug','page.name','page.content','page.is_active','page.created_date','page.updated_date','page.page_type_id','page_type.name as page_type_name')
                 ->get(),
             'total' => $count
         );

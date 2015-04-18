@@ -60,6 +60,12 @@
                         Хичээлийн суваг
                     </a>
                 </li>
+                <li class="{{ Request::is('admin/lesson') ? 'active' : '' }}">
+                    <a href="{{route('admin.lesson.index')}}">
+                        <i class="icon-list"></i>
+                        Хичээлийн жагсаалт
+                    </a>
+                </li>
             </ul>
         </li>
         <li class="{{ Request::is('admin/teacher*') || Request::is('admin/user*') ? 'active' : '' }}">
@@ -79,6 +85,20 @@
                     <a href="{{route('admin.user.index')}}">
                         <i class="icon-user"></i>
                         Системийн хэрэглэгч
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="{{ Request::is('admin/config*') ? 'active' : '' }}">
+            <a href="javascript:;">
+                <i class="icon-wrench"></i> 
+                <span class="title">Тохиргоо</span>
+                <span class="arrow  closed"></span>
+            </a>
+            <ul class="sub-menu">
+                <li class="{{ Request::is('admin/config*') ? 'active' : '' }}">
+                    <a href="{{ route('admin.config.index') }}">
+                        Сайтын тохиргоо
                     </a>
                 </li>
             </ul>

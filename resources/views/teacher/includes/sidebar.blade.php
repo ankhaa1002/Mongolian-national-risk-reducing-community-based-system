@@ -14,19 +14,19 @@
             </a>
         </li>
         <li class="{{ Request::is('adminTeacher/lesson*') ? 'active' : '' }}">
-            <a href="javascript:;">
+            <a href="#">
                 <i class="icon-edit"></i> 
                 <span class="title">Хичээл</span>
-                <span class="arrow  closed"></span>
+                <span class="arrow  open"></span>
             </a>
-            <ul class="sub-menu">
-                <li class="{{ Request::is('admin/lessonCategory*') ? 'active' : '' }}">
+            <ul class="sub-menu" style="display: block">
+                <li class="{{ Request::is('adminTeacher/lesson/create*') ? 'active' : '' }}">
                     <a href="{{route('adminTeacher.lesson.create')}}">
                         <i class="icon-edit"></i>
                         Хичээл оруулах
                     </a>
                 </li>
-                <li class="{{ Request::is('adminTeacher/lesson*') ? 'active' : '' }}">
+                <li class="{{ Request::is('adminTeacher/lesson') ? 'active' : '' }}">
                     <a href="{{route('adminTeacher.lesson.index')}}">
                         <i class="icon-edit"></i>
                         Оруулсан хичээлүүд

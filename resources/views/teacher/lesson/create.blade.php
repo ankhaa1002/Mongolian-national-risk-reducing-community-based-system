@@ -12,18 +12,18 @@
             </div>
             <div class="portlet-body form">
                 <!-- BEGIN FORM-->
-                <form id="addNewsForm" action="{{ route('admin.news.store') }}" method="POST" class="horizontal-form" enctype="multipart/form-data">
+                <form id="addLessonForm" action="{{ route('adminTeacher.lesson.store') }}" method="POST" class="horizontal-form" enctype="multipart/form-data">
+                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="alert alert-error hide">
                         <button class="close" data-dismiss="alert"></button>
-                        Та доор алдаануудыг засна уу
+                        Та доорx алдаануудыг засна уу
                     </div>
-                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
                     <div class="row-fluid">
                         <div class="span12 ">
                             <div class="control-group">
                                 <label class="control-label" for="firstName">Гарчиг<span class="required">*</span></label>
                                 <div class="controls">
-                                    <input type="text" name="title" id="title" class="m-wrap span12" placeholder="">
+                                    <input type="text" name="title" id="title" class="m-wrap span12" placeholder="" required="">
                                 </div>
                             </div>
                         </div>
@@ -32,9 +32,9 @@
                     <div class="row-fluid">
                         <div class="span6 ">
                             <div class="control-group">
-                                <label class="control-label" for="lastName">Мэдээний төрөл<span class="required">*</span></label>
+                                <label class="control-label" for="lastName">Хичээлийн төрөл<span class="required">*</span></label>
                                 <div class="controls">
-                                    <select id="categories" name="categories[]" class="m-wrap span12 required">
+                                    <select id="categories" name="category" class="m-wrap span12" required>
                                         <option></option>
                                         @foreach($categories as $cat)
                                         <option value="{{$cat['id']}}">{{$cat['name']}}</option>
@@ -45,9 +45,9 @@
                         </div>
                         <div class="span6 ">
                             <div class="control-group">
-                                <label class="control-label" for="lastName">Мэдээний суваг<span class="required">*</span></label>
+                                <label class="control-label" for="lastName">Хичээлийн суваг<span class="required">*</span></label>
                                 <div class="controls">
-                                    <select id="channels" name="channels[]" class="m-wrap span12 required">
+                                    <select id="channels" name="channel" class="m-wrap span12" required>
                                         <option></option>
                                         @foreach($channels as $channel)
                                         <option value="{{$channel['id']}}">{{$channel['name']}}</option>
@@ -129,8 +129,9 @@
 <script type="text/javascript">
     var token = '{{csrf_token()}}';
     CKEDITOR.replace('editor1', {
-        filebrowserUploadUrl: "{{route('imageUpload')}}?_token=" + token
+        filebrowserUploadUrl: "{{route('teacherImageUpload')}}?_token=" + token
     });
+
     $("#categories").select2({
         placeholder: "Төрөл сонгох"
     });
@@ -143,16 +144,68 @@
 
     $('#created_date').datepicker('update', new Date(2011, 2, 5));
 
-    $('#addNewsForm').submit(function () {
+
+    var form = $('#addLessonForm');
+    var error1 = $('.alert-error', form);
+    var success1 = $('.alert-success', form);
+    form.validate({
+        errorElement: 'span', //default input error message container
+        errorClass: 'help-inline', // default input error message class
+        focusInvalid: false, // do not focus the last invalid input
+        ignore: "",
+        rules: {
+            title: {
+              required: true  
+            },
+            power_point_lesson: {
+                extension: "ppt|pptx"
+            },
+            video_lesson: {
+                extension: "ogg|ogv|avi|mpeg|mov|wmv|flv|mp4"
+            }
+        },
+        messages: {
+            title:{
+              required: "Та гарчигаа оруулна уу!"  
+            },
+            power_point_lesson: {
+                extension: 'Зөвхөн power point файл байх ёстой!'
+            },
+            video_lesson: {
+                extension: "Зөвхөн видео файл байх ёстой!"
+            }
+        },
+        invalidHandler: function (event, validator) { //display error alert on form submit              
+            success1.hide();
+            error1.show();
+            App.scrollTo(error1, -200);
+        },
+        highlight: function (element) { // hightlight error inputs
+            $(element)
+                    .closest('.help-inline').removeClass('ok'); // display OK icon
+            $(element)
+                    .closest('.control-group').removeClass('success').addClass('error'); // set error class to the control group
+        },
+        unhighlight: function (element) { // revert the change dony by hightlight
+            $(element)
+                    .closest('.control-group').removeClass('error'); // set error class to the control group
+        },
+        submitHandler: function (form) {
+//            success1.show();
+            error1.hide();
+        }
+    });
+
+    form.submit(function (e) {
         if (!form.valid()) {
             e.preventDefault();
         } else {
-            $('#addNewsForm')[0].submit();
+            $('#addLessonForm')[0].submit();
         }
     });
 
     function backToList() {
-        window.location.replace("{{route('admin.news.index')}}");
+        window.location.replace("{{route('adminTeacher.lesson.index')}}");
     }
 
 </script>

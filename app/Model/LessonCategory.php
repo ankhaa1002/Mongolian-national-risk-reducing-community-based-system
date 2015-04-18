@@ -7,6 +7,10 @@ class LessonCategory extends Model {
     public $timestamps = false;
     protected $table = 'lesson_category';
     
+    public function lessons() {
+        return $this->hasMany('App\Model\Lesson');
+    }
+    
     public static function getLessonCategoryList($param){
         $page = $param['page'];
         $rows = $param['rows'];

@@ -7,7 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-
+use App\Model\News;
+use App\Model\Page;
+use App\Model\Teacher;
+use App\Model\Lesson;
+use Illuminate\Support\Facades\DB;
 class AdminController extends Controller {
 
     public function showLogin() {
@@ -22,6 +26,16 @@ class AdminController extends Controller {
         if (Session::has('user')) {
             $view = view('admin.index');
             $view->title = 'Удирдлагын хэсэг';
+            $view->newsCount = News::all()->count();
+            $view->pagesCount = Page::all()->count();
+            $view->teachersCount = Teacher::all()->count();
+            $view->lessonsCount = Lesson::all()->count();
+            $view->lessonLogs = DB::table('lesson_log')
+                    ->join('teacher','lesson_log.teacher_id','=','teacher.id')
+                    ->join('teacher_info','teacher.id','=','teacher_info.teacher_id')
+                    ->join('lesson', 'lesson_id', '=', 'lesson.id')
+                    ->orderBy('lesson_log.created_date','desc')
+                    ->get();
             $view->js = array(
                 'assets/plugins/jqvmap/jqvmap/jquery.vmap.js',
                 'assets/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js',
@@ -34,7 +48,8 @@ class AdminController extends Controller {
                 'assets/plugins/flot/jquery.flot.resize.js',
                 'assets/plugins/jquery.pulsate.min.js',
                 'assets/plugins/gritter/js/jquery.gritter.js',
-                'assets/plugins/fullcalendar/fullcalendar/fullcalendar.min.js'
+                'assets/plugins/fullcalendar/fullcalendar/fullcalendar.min.js',
+                'assets/plugins/flot/jquery.flot.pie.js'
             );
             return $view;
         } else {

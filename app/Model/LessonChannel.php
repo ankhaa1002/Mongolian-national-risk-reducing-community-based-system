@@ -8,7 +8,11 @@ class LessonChannel extends Model {
 
     public $timestamps = false;
     protected $table = 'lesson_channel';
-
+    
+    public function lessons() {
+        return $this->hasMany('App\Model\Lesson');
+    }
+    
     public static function getLessonChannelList($param) {
         $page = $param['page'];
         $rows = $param['rows'];

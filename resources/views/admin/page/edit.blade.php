@@ -27,11 +27,11 @@
                         <!--/span-->
                         <div class="span6 ">
                             <div class="control-group">
-                                <label class="control-label" for="lastName">Мэдээний ангилал</label>
+                                <label class="control-label" for="lastName">Хуудасны төрөл</label>
                                 <div class="controls">
                                     <select id="pageTypes" name="pageTypes[]" class="m-wrap span12">
                                         @foreach($pageTypes as $type)
-                                        <option @if(isset($type['selected']))selected="{{ $type['selected'] }}"@endif value="{{$type['id']}}">{{$type['page_type_name']}}</option>
+                                        <option @if(isset($type['selected']))selected="{{ $type['selected'] }}"@endif value="{{$type['id']}}">{{$type['name']}}</option>
                                         @endforeach
                                     </select>
                                 </div>

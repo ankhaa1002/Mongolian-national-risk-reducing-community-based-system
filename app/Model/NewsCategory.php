@@ -9,6 +9,10 @@ class NewsCategory extends Model {
     protected $table = 'news_category';
     public $timestamps = false;
 
+    public function news(){
+        return $this->belongsToMany('App\Model\News', 'news_category_map', 'category_id', 'news_id');
+    }
+    
     public static function getAllCategory($name, $param) {
         $page = $param['page'];
         $rows = $param['rows'];

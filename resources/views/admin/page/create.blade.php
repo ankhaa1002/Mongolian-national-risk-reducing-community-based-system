@@ -35,7 +35,7 @@
                                 <div class="controls">
                                     <select id="pageTypes" name="pageTypes[]" class="m-wrap span12 required">
                                         @foreach($pageTypes as $type)
-                                        <option value="{{$type['id']}}">{{$type['page_type_name']}}</option>
+                                        <option value="{{$type['id']}}">{{$type['name']}}</option>
                                         @endforeach
                                     </select>
                                 </div>

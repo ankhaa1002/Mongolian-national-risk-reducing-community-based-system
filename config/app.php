@@ -14,6 +14,21 @@ return [
      */
     'project_name' => 'Олон нийтэд тулгуурласан гамшгийн эрсдлийг бууруулах дэд хөтөлбөр',
     'debug' => env('APP_DEBUG'),
+    
+    /** 
+     * Ankhaa's custom config
+     */
+    
+    'site_title' => 'Олон нийтэд тулгуурласан гамшгийн эрсдлийг бууруулах дэд хөтөлбөр',
+    'site_description' => 'Тайлбар',
+    'address' => '',
+    'website' => '',
+    'phone' => '',
+    'facebook' => '',
+    'twitter' => '',
+    'blog_per_page' => '10',
+    'lesson_per_page' => '10',
+    
     /*
       |--------------------------------------------------------------------------
       | Application URL
