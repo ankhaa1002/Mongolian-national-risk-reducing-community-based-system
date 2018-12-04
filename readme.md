@@ -1,4 +1,4 @@
-##Mongolian national risk reducing community based system
+## Mongolian national risk reducing community based system
 This system dedicated to National Emergency Management Agency
 
 ## Олон нийтэд тулгуурласан гамшгийн эрсдлийг бууруулах дэд хөтөлбөр
